@@ -1,6 +1,8 @@
 extern crate clap;
+
 use clap::{App, Arg};
 use std::{cmp::max, time::Instant};
+
 mod board;
 mod draw_table;
 mod engine;
@@ -55,8 +57,8 @@ fn main() {
                 .short("T")
                 .long("test-bench")
                 .help(
-                "Evaluates <FEN STRING> to benchmark move generation - incompatible with play self",
-            ),
+                    "Evaluates <FEN STRING> to benchmark move generation - incompatible with play self",
+                ),
         )
         .arg(
             Arg::with_name("simple print")

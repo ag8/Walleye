@@ -18,13 +18,13 @@ const KNIGHT_CORDS: [(i8, i8); 8] = [
 // addressed as [victim][attacker]
 #[rustfmt::skip]
 const MVV_LVA: [[i32; 7]; 7] = [
-    [0,  0,  0,  0,  0,  0,  0],
+    [0, 0, 0, 0, 0, 0, 0],
     [50, 51, 52, 53, 54, 55, 0],
     [40, 41, 42, 43, 44, 45, 0],
     [30, 31, 32, 33, 34, 35, 0],
     [20, 21, 22, 23, 24, 25, 0],
     [10, 11, 12, 13, 14, 15, 0],
-    [ 0,  0,  0,  0,  0,  0, 0],
+    [0, 0, 0, 0, 0, 0, 0],
 ];
 
 #[allow(clippy::enum_variant_names)]
@@ -820,8 +820,11 @@ fn generate_castling_moves(
 
     This function assumes that the board state is a valid pawn promotion and does not do additional checks
 */
-const QUEEN_PROMOTION_SCORE: i32 = 800; // queen value - pawn value
-const UNDER_PROMOTION_SCORE: i32 = -999999999; // under promotions should be tried last
+const QUEEN_PROMOTION_SCORE: i32 = 800;
+// queen value - pawn value
+const UNDER_PROMOTION_SCORE: i32 = -999999999;
+
+// under promotions should be tried last
 fn promote_pawn(
     board: &BoardState,
     color: PieceColor,
@@ -1054,6 +1057,7 @@ mod tests {
         );
         assert_eq!(ret.len(), 2);
     }
+
     #[test]
     fn knight_moves_with_other_pieces_with_capture() {
         let b = BoardState::from_fen("8/8/5n2/3NQ3/2K2P2/8/8/8 w - - 0 1").unwrap();
@@ -1430,6 +1434,7 @@ mod tests {
         );
         assert_eq!(ret.len(), 14);
     }
+
     #[test]
     fn black_rook_center_of_board_with_white_pieces() {
         let b = BoardState::from_fen("7p/3N4/8/4n3/2kr4/3b4/8/K7 w - - 0 1").unwrap();
@@ -1815,7 +1820,7 @@ mod tests {
         let b = BoardState::from_fen(
             "r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1",
         )
-        .unwrap();
+            .unwrap();
         let zobrist_hasher = ZobristHasher::create_zobrist_hasher();
         generate_moves_test(&b, 0, 4, &mut moves_states, false, &zobrist_hasher);
         assert_eq!(moves_states[0], 48);
@@ -1843,7 +1848,7 @@ mod tests {
         let b = BoardState::from_fen(
             "r3k2r/Pppp1ppp/1b3nbN/nP6/BBP1P3/q4N2/Pp1P2PP/R2Q1RK1 w kq - 0 1",
         )
-        .unwrap();
+            .unwrap();
         let zobrist_hasher = ZobristHasher::create_zobrist_hasher();
         generate_moves_test(&b, 0, 4, &mut moves_states, false, &zobrist_hasher);
         assert_eq!(moves_states[0], 6);
@@ -1858,7 +1863,7 @@ mod tests {
         let b = BoardState::from_fen(
             "r2q1rk1/pP1p2pp/Q4n2/bbp1p3/Np6/1B3NBn/pPPP1PPP/R3K2R b KQ - 0 1",
         )
-        .unwrap();
+            .unwrap();
         let zobrist_hasher = ZobristHasher::create_zobrist_hasher();
         generate_moves_test(&b, 0, 4, &mut moves_states, false, &zobrist_hasher);
         assert_eq!(moves_states[0], 6);
@@ -1886,7 +1891,7 @@ mod tests {
         let b = BoardState::from_fen(
             "r4rk1/1pp1qppp/p1np1n2/2b1p1B1/2B1P1b1/P1NP1N2/1PP1QPPP/R4RK1 w - - 0 10",
         )
-        .unwrap();
+            .unwrap();
         let zobrist_hasher = ZobristHasher::create_zobrist_hasher();
         generate_moves_test(&b, 0, 4, &mut moves_states, false, &zobrist_hasher);
         assert_eq!(moves_states[0], 46);

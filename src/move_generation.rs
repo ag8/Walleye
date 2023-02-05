@@ -598,6 +598,14 @@ fn generate_moves_for_piece(
 
         // move the piece, this will take care of any captures as well, excluding en passant
         new_board.move_piece(square_cords, mov, zobrist_hasher);
+
+        // update gravity
+        // println!("{}", "before gravity");
+        // new_board.pretty_print_board();
+        new_board.update_gravity(zobrist_hasher);
+        // println!("{}", "after gravity");
+        // new_board.pretty_print_board();
+
         new_board.last_move = Some((square_cords, mov));
 
         // if you make your move, and you are in check, this move is not valid

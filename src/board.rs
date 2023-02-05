@@ -28,9 +28,9 @@ impl Square {
     pub fn is_empty_or_color(self, color: PieceColor) -> bool {
         match self {
             Square::Full(Piece {
-                color: square_color,
-                ..
-            }) => color == square_color,
+                             color: square_color,
+                             ..
+                         }) => color == square_color,
             Square::Empty => true,
             _ => false,
         }
@@ -45,9 +45,9 @@ impl Square {
     pub fn is_color(self, color: PieceColor) -> bool {
         match self {
             Square::Full(Piece {
-                color: square_color,
-                ..
-            }) => color == square_color,
+                             color: square_color,
+                             ..
+                         }) => color == square_color,
             _ => false,
         }
     }
@@ -283,16 +283,20 @@ impl fmt::Display for Point {
 pub struct BoardState {
     pub board: [[Square; 12]; 12],
     pub to_move: PieceColor,
-    pub pawn_double_move: Option<Point>, // if a pawn, on the last move, made a double move, this is set, otherwise this is None
+    pub pawn_double_move: Option<Point>,
+    // if a pawn, on the last move, made a double move, this is set, otherwise this is None
     pub white_king_location: Point,
     pub black_king_location: Point,
     pub white_king_side_castle: bool,
     pub white_queen_side_castle: bool,
     pub black_king_side_castle: bool,
     pub black_queen_side_castle: bool,
-    pub order_heuristic: i32, // value set to help order this board, a higher value means this board state will be considered first
-    pub last_move: Option<(Point, Point)>, // the start and last position of the last move made
-    pub pawn_promotion: Option<Piece>, // set to the chosen pawn promotion type
+    pub order_heuristic: i32,
+    // value set to help order this board, a higher value means this board state will be considered first
+    pub last_move: Option<(Point, Point)>,
+    // the start and last position of the last move made
+    pub pawn_promotion: Option<Piece>,
+    // set to the chosen pawn promotion type
     pub zobrist_key: u64,
 }
 
@@ -582,11 +586,44 @@ impl BoardState {
                 ^ zobrist_hasher.get_val_for_piece(cur_piece, end);
         }
     }
+
+    /*
+        Helper function to update gravity
+    */
+    pub fn update_gravity(&mut self, zobrist_hasher: &ZobristHasher) {
+        for _i in 1..10 {
+            // Move each piece down if there's an empty spot below it
+            for r in 2..10 {
+                for c in 2..10 {
+                    // Get the current square
+                    let square = self.board[r][c];
+
+                    // If it's not empty, try moving the piece on it down
+                    if !square.is_empty() {
+                        if let Square::Full(cur_piece) = self.board[r][c] {
+
+
+                            if cur_piece.kind != Pawn {
+                                let square_below = self.board[r - 1][c];
+                                if square_below.is_empty() {
+
+                                    // println!("There's a piece on ({}, {}), with nothing below it. Thus, moving it to ({}, {}).", r, c, r-1, c);
+
+                                    self.move_piece(Point(r, c), Point(r - 1, c), zobrist_hasher)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
+
     #[test]
     fn pieces_recognized() {
         assert_eq!(Piece::bishop(White).color, White);
@@ -961,6 +998,6 @@ mod tests {
         assert!(BoardState::from_fen(
             "rnbqkbnrrrrr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"
         )
-        .is_err());
+            .is_err());
     }
 }

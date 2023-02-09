@@ -97,6 +97,7 @@ fn find_and_play_best_move(
     let board = best_move.unwrap();
     send_best_move_to_gui(&board);
     info!("{}", board.simple_board());
+    process::exit(69420);  // TODO temporary
     board
 }
 
